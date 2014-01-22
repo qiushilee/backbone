@@ -1358,8 +1358,8 @@
 
     // Gets the true hash value. Cannot use location.hash directly due to bug
     // in Firefox where location.hash will always be decoded.
-    getHash: function(window) {
-      var match = (window || this).location.href.match(/#(.*)$/);
+    getHash: function() {
+      var match = window.location.href.match(/#(.*)$/);
       return match ? match[1] : '';
     },
 
@@ -1368,7 +1368,7 @@
     getFragment: function(fragment, forcePushState) {
       if (fragment == null) {
         if (this._hasPushState || !this._wantsHashChange || forcePushState) {
-          fragment = decodeURI(this.location.pathname + this.location.search);
+          fragment = decodeURI(window.location.pathname + window.location.search);
           var root = this.root.replace(trailingSlash, '');
           if (!fragment.indexOf(root)) fragment = fragment.slice(root.length);
         } else {
@@ -1417,7 +1417,7 @@
       // Determine if we need to change the base url, for a pushState link
       // opened by a non-pushState browser.
       this.fragment = fragment;
-      var loc = this.location;
+      var loc = window.location;
 
       // Transition from hashChange to pushState or vice versa if both are
       // requested.
@@ -1427,7 +1427,7 @@
         // browser, but we're currently in a browser that doesn't support it...
         if (!this._hasPushState && !this.atRoot()) {
           this.fragment = this.getFragment(null, true);
-          this.location.replace(this.root + '#' + this.fragment);
+          window.location.replace(this.root + '#' + this.fragment);
           // Return immediately as browser will do redirect to new url
           return true;
 
@@ -1532,11 +1532,11 @@
     // a new one to the browser history.
     _updateHash: function(location, fragment, replace) {
       if (replace) {
-        var href = location.href.replace(/(javascript:|#).*$/, '');
-        location.replace(href + '#' + fragment);
+        var href = window.location.href.replace(/(javascript:|#).*$/, '');
+        window.location.replace(href + '#' + fragment);
       } else {
         // Some browsers require that `hash` contains a leading #.
-        location.hash = '#' + fragment;
+        window.location.hash = '#' + fragment;
       }
     }
 
